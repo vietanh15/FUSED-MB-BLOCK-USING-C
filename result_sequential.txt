@@ -1,0 +1,64 @@
+========== LAYER1.C - SEQUENTIAL IMPLEMENTATION ==========
+
+[THEORY] Configuration:
+  - Input:  32x32x64 = 65536 bytes
+  - Weights: 128x3x3x64 = 73728 bytes
+  - Output: 32x32x128 = 131072 bytes
+
+[THEORY] Memory Layout:
+  - IFM BRAM depth: 4096 rows (16 bytes/row)
+  - Weight BRAM/PE: 288 rows, Total: 4608 rows
+  - OFM BRAM depth: 8192 rows
+
+[THEORY] Performance (cycles):
+  - Load IFM:      4096 cycles
+  - Load Weights:  4608 cycles
+  - Total Load:    8704 cycles
+  - Compute:       4718592 cycles
+  - TOTAL:         4727296 cycles
+
+======================================================
+
+[PROFILE] Phase 1: Loading from file to DRAM...
+  Elapsed time: 105.000 ms
+
+[PROFILE] Phase 2: Loading IFM to BRAM...
+  IFM rows loaded: 4096
+  Elapsed time: 0.000 ms
+
+[PROFILE] Phase 3: Loading Weights to BRAM (per PE)...
+  Weight rows per PE: 288
+  Elapsed time: 0.000 ms
+
+[PROFILE] Phase 4: Compute convolution...
+  Output shape: 32x32x128 = 131072 elements
+  Elapsed time: 20.000 ms
+
+[PROFILE] Phase 5: Writing OFM to file...
+  Elapsed time: 54.000 ms
+
+======================================================
+[RESULT] Total execution time: 179.000 ms
+  - File load:    105.000 ms (58.7%)
+  - IFM BRAM:     0.000 ms (0.0%)
+  - Weight BRAM:  0.000 ms (0.0%)
+  - Compute:      20.000 ms (11.2%)
+  - Write output: 54.000 ms (30.2%)
+
+======================================================
+[CYCLES] Theoretical vs Actual:
+  - Theoretical Load cycles:    8704 cycles
+  - Theoretical Compute cycles: 4718592 cycles
+  - Theoretical Total cycles:   4727296 cycles
+
+  - Actual Load iterations:     8704 iterations
+  - Actual Compute loop iter:   4718592 iterations
+  - Estimated CPU freq:         235929600 MHz
+  - Actual Compute cycles:      4718592 cycles (approx)
+  - Actual Total time:          179.000 ms
+
+  - Ratio (Actual/Theory):      1.00 x
+  - Load efficiency:            100.0% (Theory vs Actual)
+  - Compute efficiency:         100.0% (Theory vs Actual)
+
+======================================================

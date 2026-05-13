@@ -1,0 +1,68 @@
+========== LAYER1 PING-PONG MUX - OPTIMIZED ==========
+
+[THEORY] Configuration:
+  - Input:  32x32x64 = 65536 bytes
+  - Weights: 128x3x3x64 = 73728 bytes
+  - Output: 32x32x128 = 131072 bytes
+
+[THEORY] Ping-Pong Memory Layout:
+  - Bank size: 384 rows (3 image rows)
+  - Total banks: 11
+  - IFM BRAM depth: 768 rows (6 rows buffer: 3 PING + 3 PONG)
+  - Weight BRAM/PE: 288 rows, Total: 4608 rows
+  - OFM BRAM depth: 8192 rows
+
+[THEORY] Memory Savings (vs Sequential):
+  - Sequential IFM BRAM: 4096 rows
+  - Ping-Pong IFM BRAM:  768 rows
+  - Savings: 81.2%
+
+[THEORY] Performance (cycles):
+  - Load per bank:       384 cycles
+  - Num banks to load:   11
+  - Compute (dominant):  4718592 cycles
+  - With full overlap:   4718592 cycles (compute dominates)
+  - Theoretical speedup: ~0.18% (compute-bound)
+
+======================================================
+
+[PROFILE] Phase 1: Loading from file to DRAM...
+  Elapsed time: 100.000 ms
+
+[PROFILE] Phase 2: Loading Weights to BRAM (per PE)...
+  Weight rows per PE: 288
+  Elapsed time: 0.000 ms
+
+[PROFILE] Phase 3: Pre-load initial bank (PING)...
+  Elapsed time: 0.000 ms
+
+[PROFILE] Phase 4: Compute with Ping-Pong buffering...
+[PROFILE] Phase 5: Writing OFM to file...
+  Elapsed time: 48.000 ms
+
+======================================================
+[RESULT] Total execution time: 217.000 ms
+  - File load:       100.000 ms (46.1%)
+  - Weight BRAM:     0.000 ms (0.0%)
+  - Initial IFM buf: 0.000 ms (0.0%)
+  - Compute+Load:    68.000 ms (31.3%)
+    - Compute only:  50.000 ms
+    - Load only:     0.000 ms
+  - Write output:    48.000 ms (22.1%)
+
+======================================================
+[CYCLES] Theoretical vs Actual:
+  - Theoretical Compute cycles: 4718592 cycles
+  - Theoretical Load cycles:    ~3840 cycles (overlapped)
+  - Theoretical Total cycles:   ~4,723,584 cycles
+
+  - Actual Compute loop iter:   4718592 iterations
+  - Actual Load iterations:     3840 iterations
+  - Estimated CPU freq:         94371840 MHz
+  - Actual Compute cycles:      4718592 cycles (approx)
+  - Actual Total time:          217.000 ms
+
+  - Ratio (Actual/Theory):      1.00 x
+  - Loop efficiency:            100.0% (Theory vs Actual)
+
+======================================================
